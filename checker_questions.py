@@ -1,3 +1,4 @@
+# [[file:checker.org::*questions][questions:1]]
 # !/usr/bin/env python3
 from easyAI import TwoPlayerGame, Human_Player, AI_Player, Negamax
 from easyAI import solve_with_iterative_deepening
@@ -142,35 +143,39 @@ class Checker(TwoPlayerGame):
         else:
             return self.possible_moves_on_white_turn()
 
-    def get_piece_pos_from_table(self, table_pos):
-        x = np.where(table_pos == "W")
-        return [(i,j) for i,j in zip(x[0], x[1])]
-
     def make_move(self, pos):
+        """
+        assign pieces index of pos array to current player position.
+
+        parameters
+        -------
+        pos = position of all pieces on the (8 x 8) boards. type numpy array.
+
+        example of pos
+        [[0,B,0,B,0,B,0,B],
+         [B,0,B,0,B,0,B,0],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0],
+         [0,W,0,W,0,W,0,W],
+         [W,0,W,0,W,0,W,0]]
+        ------
+        """
         # update board
-        self.players[self.current_player-1].pos = self.get_piece_pos_from_table(pos)
+        pass
 
     def lose(self):
         """
+        black lose if white piece is in black territory
+        white lose if black piece is in black territory
         """
-        if self.current_player == 2: # black lose
-
-            for i in self.black_territory:
-                if self.board[i[0],i[1]] == "W":
-                    return True
-            return False
-
-        else: # white lose
-            for i in self.white_territory:
-                if self.board[i[0],i[1]] == "B":
-                    return True
-            return False
+        pass
 
     def is_over(self):
         """
-        over when finish game = N-1, and current game just finish.
+        game is over immediately when one player lose
         """
-        return self.lose()
+        pass
 
     def show(self):
         """
@@ -190,9 +195,10 @@ class Checker(TwoPlayerGame):
        win = 0
        lose = -100
        """
-       return -100 if self.lose() else 0
+       pass
 
 if __name__ == "__main__":
     ai = Negamax(1) # The AI will think 13 moves in advance
     game = Checker( [ AI_Player(ai), AI_Player(ai) ] )
     history = game.play()
+# questions:1 ends here
