@@ -184,5 +184,14 @@ def test_scoring(checker_game):
     checker_game.board = np.zeros((8,8))
     assert checker_game.scoring() == 0
 
+
+@pytest.mark.usefixtures("checker_game")
+def test_number_of_piece_the_same_after_move(checker_game):
+    pass
+
+    # make a move
+    # checker_game.make_move()
+    # # count pass zero = 48.
+
 if __name__ == "__main__":
     pass
