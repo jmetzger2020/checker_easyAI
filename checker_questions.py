@@ -8,6 +8,7 @@ import numpy as np
 even = [0,2,4,6]
 odd = [1,3,5,7]
 
+# init
 even_row = [(i,j) for i in even for j in odd]
 odd_row = [(i,j) for i in odd for j in even]
 
@@ -46,7 +47,13 @@ class Checker(TwoPlayerGame):
 
         table_pos = []
         old_new_piece_pos = []
-        board = self.board
+
+        # board position before move
+        board = self.blank_board.copy()
+        for (p,l) in zip(self.players, ["W", "B"]):
+            for x,y in p.pos:
+                board[x,y] = l
+
         # get legal move of each pieces. (old piece location, new piece location)
         # get position of each move (list of all table position)
         for v in self.players[self.current_player-1].pos:
@@ -72,25 +79,30 @@ class Checker(TwoPlayerGame):
                     else:
                         old_new_piece_pos.append((old_piece_pos,n))
 
-        # board position before move
-        board = self.blank_board
-        for (p,l) in zip(self.players, ["W", "B"]):
-            for x,y in p.pos:
-                board[x,y] = l
-
         # board position after  move
         for i,j in old_new_piece_pos:
+            print(f"i = {i}")
             b = board.copy()
-            b[i[0], i[1]] = 0
-            b[j[0], j[1]] = "W"
+            b[i[0], i[1]] = 0 # old position
+            b[j[0], j[1]] = "W" # new position
             # print(b)
             table_pos.append(b)
+            assert len(np.where(b != 0)[0]) == 16, f"In possible_moves_on_white_turn(), there are {len(np.where(b != 0)[0])} pieces on the board  \n {b}"
+
+
+        self.board = board
         return table_pos
 
     def possible_moves_on_black_turn(self):
         table_pos = []
         old_new_piece_pos = []
-        board = self.board
+
+        # board position before move
+        board = self.blank_board.copy()
+        for (p,l) in zip(self.players, ["W", "B"]):
+            for x,y in p.pos:
+                board[x,y] = l
+
         # get legal move of each pieces. (old piece location, new piece location)
         # get position of each move (list of all table position)
         for v in self.players[self.current_player-1].pos:
@@ -116,13 +128,6 @@ class Checker(TwoPlayerGame):
                     else:
                         old_new_piece_pos.append((old_piece_pos,n))
 
-        # board position before move
-        board = self.blank_board
-        for (p,l) in zip(self.players, ["W", "B"]):
-            for x,y in p.pos:
-                board[x,y] = l
-        print(f"board = \n{board}")
-
         # board position after  move
 
         for i,j in old_new_piece_pos:
@@ -130,8 +135,9 @@ class Checker(TwoPlayerGame):
             b[i[0], i[1]] = 0
             b[j[0], j[1]] = "B"
             table_pos.append(b)
-            assert len(np.where(b != 0)[0]) == 16, f"there are {len(np.where(b != 0)[0])} pieces on the board  \n {b}"
+            assert len(np.where(b != 0)[0]) == 16, f"In possible_moves_on_black_turn(), there are {len(np.where(b != 0)[0])} pieces on the board  \n {b}"
 
+        self.board = board
         return table_pos
 
     def possible_moves(self):
@@ -142,6 +148,17 @@ class Checker(TwoPlayerGame):
             return self.possible_moves_on_black_turn()
         else:
             return self.possible_moves_on_white_turn()
+
+    def get_piece_pos_from_table(self, table_pos):
+        if self.current_player-1 == 0:
+            x = np.where(table_pos == "W")
+        elif self.current_player-1 == 1:
+            x = np.where(table_pos == "B")
+        else:
+            raise ValueError("There can be at most 2 players.")
+
+        assert len(np.where(table_pos != 0)[0]) == 16, f"In get_piece_pos_from_table(), there are {len(np.where(table_pos != 0)[0])} pieces on the board  \n {table_pos}"
+        return [(i,j) for i,j in zip(x[0], x[1])]
 
     def make_move(self, pos):
         """
@@ -161,7 +178,6 @@ class Checker(TwoPlayerGame):
          [W,0,W,0,W,0,W,0]]
         ------
         """
-        # update board
         pass
 
     def lose(self):
@@ -173,7 +189,7 @@ class Checker(TwoPlayerGame):
 
     def is_over(self):
         """
-        game is over immediately when one player lose
+        game is over immediately when one player get one of its piece into opponent's territory.
         """
         pass
 
@@ -183,7 +199,9 @@ class Checker(TwoPlayerGame):
         """
 
         # board position before move
-        board = self.blank_board
+        board = self.blank_board.copy()
+        print(f"player 1 positions = {self.players[0].pos}")
+        print(f"player 2 positions = {self.players[1].pos}")
         for (p,l) in zip(self.players, ["W", "B"]):
             for x,y in p.pos:
                 board[x,y] = l
