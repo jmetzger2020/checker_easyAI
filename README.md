@@ -49,8 +49,7 @@ Follow instructions in the easyAI GitHub repo: https://github.com/Zulko/easyAI
 
     sudo python -m pip install easyAI
     
-download the repository
-navigate to the checker_easyAI folder on your computer
+download the repository and navigate to the checker_easyAI folder on your computer
 
 run the file:
 
