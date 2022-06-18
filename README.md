@@ -54,4 +54,3 @@ download the repository and navigate to the checker_easyAI folder on your comput
 run the file:
 
     python p1_FAUKTudor2018.py
-'''
