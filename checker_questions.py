@@ -1,5 +1,12 @@
 # [[file:checker.org::*questions][questions:1]]
 # !/usr/bin/env python3
+
+"""
+Created by: Kevin Tudor
+Date: 06/17/2022
+Assignment #1
+"""
+
 from easyAI import TwoPlayerGame, Human_Player, AI_Player, Negamax
 from easyAI import solve_with_iterative_deepening
 import numpy as np
@@ -163,11 +170,9 @@ class Checker(TwoPlayerGame):
     def make_move(self, pos):
         """
         assign pieces index of pos array to current player position.
-
         parameters
         -------
         pos = position of all pieces on the (8 x 8) boards. type numpy array.
-
         example of pos
         [[0,B,0,B,0,B,0,B],
          [B,0,B,0,B,0,B,0],
@@ -178,20 +183,53 @@ class Checker(TwoPlayerGame):
          [W,0,W,0,W,0,W,0]]
         ------
         """
-        pass
+        
+        self.players[self.current_player-1].pos = self.get_piece_pos_from_table(pos) #update player pieces
+        self.board = pos #update board
 
     def lose(self):
         """
         black lose if white piece is in black territory
         white lose if black piece is in black territory
         """
-        pass
+    
+        for b_pos in self.players[1].pos: #for every black position
+            if b_pos in self.white_territory: #if a black position in w territory
+                #print("Black Wins")
+                return 1
+            
+        for w_pos in self.players[0].pos: #for every white position
+            if w_pos in self.black_territory: #if a white position in b territory
+                #print("White Wins")
+                return 2
+            
+        return False
+                
+            
+            
+        #self.player[1].pos #positions of all black players
+        #self.white_territory 
+        
 
     def is_over(self):
         """
         game is over immediately when one player get one of its piece into opponent's territory.
         """
-        pass
+
+        #if a black position in w territory or white has 0 pieces left or white has no possible moves left
+        if self.lose() == 1 \
+            or len(self.white_pieces) == 0 \
+                or self.possible_moves_on_white_turn == []:
+            print("\nBlack Wins!")
+            return True
+
+        #if a white position in b territory or black has 0 pieces left or black has no possible moves left
+        if self.lose() == 2 \
+            or len(self.black_pieces) == 0 \
+                or self.possible_moves_on_black_turn == []:
+            print("\nWhite Wins!")
+            return True
+        
 
     def show(self):
         """
@@ -213,10 +251,15 @@ class Checker(TwoPlayerGame):
        win = 0
        lose = -100
        """
-       pass
+       if self.lose() == 1 or self.lose() == 2:
+           return -100
+       else:
+           return 0
+   
+        
 
 if __name__ == "__main__":
     ai = Negamax(1) # The AI will think 13 moves in advance
-    game = Checker( [ AI_Player(ai), AI_Player(ai) ] )
+    game = Checker( [AI_Player(ai), AI_Player(ai) ] )
     history = game.play()
 # questions:1 ends here
